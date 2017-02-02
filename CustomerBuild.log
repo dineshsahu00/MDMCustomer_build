@@ -1,0 +1,18 @@
+
+BUILD_IIB:
+
+BUILD_CUSTOMER:
+     [echo] Initiating MDM Customer Information Management Build Time 4-September-2015-05_28
+
+CREATE_BAR_CUSTOMER:
+     [echo] Deleting Existing existing Output Directory
+     [echo] Building the Customer Message Broker Project @ D:/SOA/IIB/Workspace/MDMCustomer_PubSub_31_July/MDMCustomer_PubSub
+     [echo] Bar Generated bars\MDMCustomerInformationManagement.bar
+
+OVERRIDE_CONFIGURABLE_PROPERTIES_CUSTOMER:
+     [echo] Applying overrides in Broker Archive file - bars\MDMCustomerInformationManagement.bar 
+     [echo] D:/Program Files (x86)/IBM/IntegrationToolkit90\mqsiapplybaroverride.exe -b  bars\MDMCustomerInformationManagement.bar -p Override Properties}
+     [echo] Completed apply overrides in Broker Archive file - bars\MDMCustomerInformationManagement.bar
+
+BUILD SUCCESSFUL
+Total time: 2 minutes 48 seconds

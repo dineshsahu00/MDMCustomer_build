@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<project name="project" basedir="." default="BUILD_IIB">
+ <property file="./build.properties"/>
+
+
+  <target name="BUILD_IIB" description="">
+   <tstamp>
+		<format property="CURRENT_TIME" pattern="d-MMMM-yyyy-hh_mm" locale="en,GB"/>
+	</tstamp>
+    <property name="customer.bar.name" value="${build.bars.output}\${broker.customer.bar.name}" />
+    <antcall target="BUILD_CUSTOMER"/>
+  </target>
+  
+   <target name="BUILD_CUSTOMER" >
+        <echo message="Initiating MDM Customer Information Management Build Time ${CURRENT_TIME}" />
+			<antcall target="CREATE_BAR_CUSTOMER"/>
+			<antcall target="OVERRIDE_CONFIGURABLE_PROPERTIES_CUSTOMER"/>
+   </target>
+   
+   
+  <!-- =============================================================
+	   Target to create the Customer broker archive using mqsicreatebar
+	   ============================================================= -->
+  <target name="CREATE_BAR_CUSTOMER">
+	 <echo message="Deleting Existing existing Output Directory"/>
+	 <delete dir="${build.bars.output}"/>
+     <echo message="Building the Customer Message Broker Project @ ${broker.customer.workspace.dir}" />
+     <exec executable="${build.toolkit.home}\mqsicreatebar.exe" spawn="false" failonerror="true">
+		<arg value="-cleanbuild"/>
+        <arg value="-data" />
+            <arg value="${broker.customer.workspace.dir}" />
+        <arg value="-b" />
+            <arg value="${customer.bar.name}" />
+        <!-- List all the message flow projects --> 
+        <arg value="-p" />
+            <arg value="${broker.customer.project.name}" />
+
+		 <arg value="-a" />
+            <arg value="${broker.customer.project.name}" />
+        <!-- List all the files to be included in the archive 
+        <arg value="-o" />
+            <arg value="${broker.customer.project.name}/${broker.main.message.flow}" />
+            <arg value="${broker.customer.project.name}/${broker.exception.message.flow}" />-->
+     </exec>
+	 <echo message="Bar Generated ${customer.bar.name}" />
+  </target>
+
+  <!-- ======================================================================
+	   Target to build the Customer broker archive using mqsiapplybaroverride
+	   ====================================================================== -->
+  <target name="OVERRIDE_CONFIGURABLE_PROPERTIES_CUSTOMER">
+    <echo message="Applying overrides in Broker Archive file - ${customer.bar.name} " />
+    <echo message="${build.toolkit.home}\mqsiapplybaroverride.exe -b  ${customer.bar.name} -p Override Properties}" />
+    <exec executable="${build.toolkit.home}\mqsiapplybaroverride.exe" spawn="false" failonerror="true">
+      <arg value="-b" />
+      <arg value="${customer.bar.name}" />
+      <arg value="-p" />
+      <arg value="CustomerOverride.properties" />
+    </exec>
+    <echo message="Completed apply overrides in Broker Archive file - ${customer.bar.name}" />
+  </target>
+  
+  
+  <!-- =============================================================
+	   Target to Deploy the broker archive using mqsideploy- Currently not is use
+	   ============================================================= -->
+	<target name="DEPLOY_BAR">
+	   <exec executable="${mqsi.home}\bin\mqsideploy.exe" spawn="false" vmlauncher="false" failonerror="true">
+		  <arg value="-i" />
+		  <arg value="${env.ipaddress}" />
+		  <arg value="-p" />
+		  <arg value="${env.port}" />
+		  <arg value="-q" />
+		  <arg value="${env.queuemgr}" />
+		  <arg value="-b" />
+		  <arg value="${env.broker}" />
+		  <arg value="-e" />
+		  <arg value="${env.exegroup}" />
+		  <arg value="-a" />
+		  <arg value="${bar.name}" />
+	   </exec>
+	   <echo message="Deploying Broker Archive file - ${bar.name} " />
+	</target>
+
+</project>
