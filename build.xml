@@ -66,6 +66,8 @@
 	   ============================================================= -->
 	<target name="DEPLOY_BAR">
 	   <exec executable="${mqsi.home}\bin\mqsideploy.exe" spawn="false" vmlauncher="false" failonerror="true">
+		   <env key="MQSI_CMP_USERNAME" value="${user.name}" />
+		   <env key="MQSI_CMP_PASSWORD" value="${user.password}" />
 		  <arg value="-i" />
 		  <arg value="${env.ipaddress}" />
 		  <arg value="-p" />
